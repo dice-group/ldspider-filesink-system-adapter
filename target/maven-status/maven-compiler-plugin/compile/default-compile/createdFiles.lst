@@ -1,0 +1,7 @@
+org/dice_research/squirrel/squirrel_benchmark/system/SystemAdapter.class
+org/dice_research/squirrel/squirrel_benchmark/DataGenerator.class
+org/dice_research/squirrel/squirrel_benchmark/TaskGenerator.class
+org/dice_research/squirrel/squirrel_benchmark/BenchmarkController.class
+org/dice_research/squirrel/squirrel_benchmark/EvalModule.class
+org/dice_research/squirrel/squirrel_benchmark/EvalStorage.class
+org/dice_research/squirrel/benchmark/Constants.class
