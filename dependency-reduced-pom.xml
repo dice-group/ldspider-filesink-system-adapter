@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dice_research.squirrel</groupId>
-  <artifactId>squirrel_benchmark</artifactId>
-  <version>1.0.5</version>
+  <artifactId>ldspider_benchmark</artifactId>
+  <version>1.0.0</version>
   <build>
     <plugins>
       <plugin>
@@ -147,20 +147,8 @@
           <groupId>org.hobbit</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>json-simple</artifactId>
-          <groupId>com.googlecode.json-simple</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-compress</artifactId>
-          <groupId>org.apache.commons</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>docker-client</artifactId>
           <groupId>com.spotify</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit</artifactId>
-          <groupId>junit</groupId>
         </exclusion>
         <exclusion>
           <artifactId>system-rules</artifactId>
@@ -179,10 +167,6 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>lettuce</artifactId>
           <groupId>biz.paluch.redis</groupId>
         </exclusion>
@@ -193,10 +177,6 @@
         <exclusion>
           <artifactId>java-gitlab-api</artifactId>
           <groupId>org.gitlab</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jackson-dataformat-yaml</artifactId>
-          <groupId>com.fasterxml.jackson.dataformat</groupId>
         </exclusion>
         <exclusion>
           <artifactId>docker-client</artifactId>

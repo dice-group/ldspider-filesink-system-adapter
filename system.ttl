@@ -10,4 +10,4 @@
     rdfs:label	"SDK Example System"@en;
 	rdfs:comment "Example system for SDK Example Benchmark"@en;
 	hobbit:implementsAPI <http://project-hobbit.eu/sdk-example-benchmark/API>;
-	hobbit:imageName "git.project-hobbit.eu:4567/ldspider/ldspider-benchmark/system-adapter" .
+	hobbit:imageName "git.project-hobbit.eu:4567/gsjunior86/ldspider_adapter" .

@@ -20,12 +20,9 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
 
 	
 	private final static String LDSPIDER_IMAGE = "ldspider:latest";
-    protected int numberOfWorkers = 1;
-    private Serializer serializer;
-    protected Set<String> workerInstances = new HashSet<>();
-    protected Semaphore processTerminated = new Semaphore(0);
+    private long numberOfThreads = 2;
     protected boolean terminating = false;
-    
+    protected String[] LDSPIDER_ENV;
     
     protected String ldSpiderInstance;
 
@@ -34,10 +31,6 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
 	public void init() throws Exception {
 		super.init();
 		
-		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, null, this);
-
-		
-		serializer = new GzipJavaUriSerializer();
 	}
 	
 	@Override
@@ -47,23 +40,15 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
         String sparqlUrl = RabbitMQUtils.readString(buffer);
         String sparqlUser = RabbitMQUtils.readString(buffer);
         String sparqlPwd = RabbitMQUtils.readString(buffer);
-		
-		String[] WORKER_ENV = { "b=1000",
+        	
+        LDSPIDER_ENV = new String[]{ "b=1000",
                 "oe=" + sparqlUrl,
-                "user_sparql=" + sparqlUser, "passwd_sparql=" + sparqlPwd,
-                "s=/seed_file" };		
-
-        String worker;
+                "user_sparql=" + sparqlUser,
+                "passwd_sparql=" + sparqlPwd,
+                "t="+numberOfThreads+"",
+                "s=seed"};
+		
         
-        worker = createContainer(LDSPIDER_IMAGE, WORKER_ENV, this);
-
-            if (worker == null) {
-                LOGGER.error("Error while trying to start LDSpider. Exiting.");
-                System.exit(1);
-            } else {
-                LOGGER.info("LDSpider started.");
-                workerInstances.add(worker);
-            }    
 		
 	}
 	
@@ -75,24 +60,37 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
         } else {
             LOGGER.debug("Received seed URI(s).");
         }
-
-        
-        String seed = RabbitMQUtils.readString(data);		
-        
-        
         //TODO implement a solution for inserting seeds in ldspider
+        
+        
+	 	String seed = RabbitMQUtils.readString(data);
+		
+	 	LDSPIDER_ENV[5].replaceAll("seed", seed);
+        
+		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, LDSPIDER_ENV, this);
 	}
 	
 	@Override
 	protected synchronized void terminate(Exception cause) {
-		// TODO Auto-generated method stub
-		super.terminate(cause);
+		LOGGER.debug("Terminating");
+        terminating = true;
+        super.terminate(cause);
 	}
 	
 	
 	@Override
 	public void containerStopped(String containerName, int exitCode) {
-		// TODO Auto-generated method stub
+        // Check whether it is one of your containers and react accordingly
+        if ((ldSpiderInstance != null) && (ldSpiderInstance.equals(containerName)) && !terminating) {
+            Exception e = null;
+            if (exitCode != 0) {
+                // The ldspider had an error. Its time to panic
+                LOGGER.error("ldspider terminated with exit code {}.", exitCode);
+                e = new IllegalStateException("ldspider terminated with exit code " + exitCode + ".");
+            }
+            ldSpiderInstance = null;
+            terminate(e);
+        } 
 		
 	}
 	
