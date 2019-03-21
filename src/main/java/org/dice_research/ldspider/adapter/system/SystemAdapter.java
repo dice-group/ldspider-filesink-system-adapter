@@ -11,6 +11,7 @@ import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.core.components.ContainerStateObserver;
 import org.hobbit.core.rabbit.RabbitMQUtils;
+import static org.hobbit.core.Constants.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
 		
 	 	LDSPIDER_ENV[5].replaceAll("seed", seed);
         
-		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, LDSPIDER_ENV, this);
+		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
 	}
 	
 	@Override
