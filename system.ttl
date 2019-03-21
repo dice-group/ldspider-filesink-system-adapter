@@ -6,8 +6,8 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<http://project-hobbit.eu/sdk-example-benchmark/system>	a	hobbit:SystemInstance;
-    rdfs:label	"Ldspider"@en;
-	rdfs:comment "Ldspider crawler"@en;
+<https://github.com/dice-group/ldcbench-ldspider-adapter#System>	a	hobbit:SystemInstance;
+    rdfs:label	"LDSpider"@en;
+	rdfs:comment "The LDSpider project provides a web crawling framework for the Linked Data web."@en;
 	hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
-	hobbit:imageName "git.project-hobbit.eu:4567/gsjunior86/ldspider_adapter" .
+	hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-adapter" .
