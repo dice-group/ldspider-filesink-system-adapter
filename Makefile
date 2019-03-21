@@ -1,5 +1,10 @@
-install-deps:
-	mvn validate
+IMAGE = git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-adapter
+
+build:
+	mvn clean package -DskipTests
+
+dockerize: build
+	docker build -t $(IMAGE) .
 
 test-benchmark:
 	mvn -Dtest=BenchmarkTest#checkHealth test
@@ -7,17 +12,15 @@ test-benchmark:
 package:
 	mvn -DskipTests -DincludeDeps=true package
 
-build-images:
-	mvn -Dtest=BenchmarkTest#buildImages surefire:test
-
 test-dockerized-benchmark:
 	mvn -Dtest=BenchmarkTest#checkHealthDockerized test
 
 
 push-images:
-	sudo docker push git.project-hobbit.eu:4567/sdk-examples/sdk-example-benchmark/benchmark-controller
-	sudo docker push git.project-hobbit.eu:4567/sdk-examples/sdk-example-benchmark/datagen
-	sudo docker push git.project-hobbit.eu:4567/sdk-examples/sdk-example-benchmark/taskgen
-	sudo docker push git.project-hobbit.eu:4567/sdk-examples/sdk-example-benchmark/eval-storage
-	sudo docker push git.project-hobbit.eu:4567/sdk-examples/sdk-example-benchmark/system-adapter
-	sudo docker push git.project-hobbit.eu:4567/sdk-examples/sdk-example-benchmark/eval-module
+	docker push $(IMAGE)
+
+add-hobbit-remote:
+	git remote |grep hobbit ||git remote --verbose add hobbit https://git.project-hobbit.eu/ldcbench/ldcbench-ldspider-adapter
+
+push-hobbit: add-hobbit-remote
+	git push --verbose hobbit master
