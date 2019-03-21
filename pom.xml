@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dice_research.squirrel</groupId>
-    <artifactId>ldspider_benchmark</artifactId>
+    <artifactId>ldspider-ldcbench-adapter</artifactId>
     <version>1.0.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -151,40 +151,79 @@
 
     <build>
         <plugins>
+            <!-- Compiler plugin -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
+                <version>3.8.0</version>
             </plugin>
+            <!-- Source plugin for creating source file jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                        <!--<descriptorRef>jar</descriptorRef>-->
-                    </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
                 <executions>
-                        <execution>
-					      <id>make-assembly</id> <!-- this is used for inheritance merges -->
-					      <phase>package</phase> <!-- bind to the packaging phase -->
-					      <goals>
-					        <goal>single</goal>
-					      </goals>
-   					 </execution>
+                    <execution>
+                        <id>attach-sources-package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-sources-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
+            <!-- Javadoc plugin for generating documentation -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.1</version>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                    <failOnError>false</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Resources management plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- Shade plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
+                    <!-- Mark the shaded artifact instead of overwriting 
+                        the original artifact. It should also neither be installed nor deployed together 
+                        with other artifacts. -->
+                    <finalName>${project.artifactId}-shaded</finalName>
                     <!-- filter all the META-INF files of other artifacts -->
                     <filters>
                         <filter>
@@ -198,60 +237,44 @@
                     </filters>
                     <transformers>
                         <transformer
-                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <manifestEntries>
-                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                                <X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
+                                <X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
                             </manifestEntries>
                         </transformer>
                         <transformer
-                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                     </transformers>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
+            </plugin>
+            <!-- lock down plugins versions to avoid using Maven defaults 
+                (may be moved to parent pom) -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
+                <version>2.22.1</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <sdkJarFilePath>${project.build.directory}/${project.build.finalName}.jar</sdkJarFilePath>
+                        <sdkJarFilePath>${project.build.directory}/${project.artifactId}-shaded.jar</sdkJarFilePath>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-            <!-- 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>hack-binary</id>
-                        <phase>validate</phase>
-                        <configuration>
-                            <file>${basedir}/libs/hobbit-java-sdk-${hobbit.sdk.version}.jar</file>
-                            <pomFile>${basedir}/libs/hobbit-java-sdk-${hobbit.sdk.version}.pom</pomFile>
-                            <repositoryLayout>default</repositoryLayout>
-                            <groupId>org.hobbit</groupId>
-                            <artifactId>hobbit-java-sdk</artifactId>
-                            <version>${hobbit.sdk.version}</version>
-                            <packaging>jar</packaging>
-                            <generatePom>true</generatePom>
-                        </configuration>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
             </plugin>
-             -->
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+            </plugin>
         </plugins>
     </build>
 </project>
