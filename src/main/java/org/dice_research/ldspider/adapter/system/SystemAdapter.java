@@ -20,7 +20,7 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemAdapter.class);
 
 	
-	private final static String LDSPIDER_IMAGE = "ldspider:latest";
+	private final static String LDSPIDER_IMAGE = "dicegroup/ldspider:latest";
     private long numberOfThreads = 2;
     protected boolean terminating = false;
     protected String[] LDSPIDER_ENV;
