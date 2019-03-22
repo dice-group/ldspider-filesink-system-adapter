@@ -42,14 +42,14 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
         String sparqlUser = RabbitMQUtils.readString(buffer);
         String sparqlPwd = RabbitMQUtils.readString(buffer);
         
-        LOGGER.warn("Sparql Endpoint: " + "http://" + sparqlUrl + ":8890/sparql-auth");
+        LOGGER.warn("Sparql Endpoint: " + sparqlUrl);
         	
         LDSPIDER_ENV = new String[]{ "b=1000",
-                "oe=http://" + sparqlUrl + ":8890/sparql-auth",
+                "oe="+sparqlUrl,
                 "user_sparql=" + sparqlUser,
                 "passwd_sparql=" + sparqlPwd,
                 "t="+numberOfThreads+"",
-                "s=seed"};
+                "s="};
 		
         
 		
@@ -68,7 +68,7 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
         
 	 	String seed = RabbitMQUtils.readString(data);
 		
-	 	LDSPIDER_ENV[5].replaceAll("seed", seed);
+	 	LDSPIDER_ENV[5] = LDSPIDER_ENV[5] + seed;
         
 		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
 	}
