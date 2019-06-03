@@ -63,12 +63,10 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
         } else {
             LOGGER.debug("Received seed URI(s).");
         }
-        //TODO implement a solution for inserting seeds in ldspider
-        
-        
+
 	 	String seed = RabbitMQUtils.readString(data);
 		
-	 	LDSPIDER_ENV[5] = LDSPIDER_ENV[5] + seed;
+		LDSPIDER_ENV[5] = LDSPIDER_ENV[5] + seed.replaceAll("\n", ",");
         
 		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
 	}
