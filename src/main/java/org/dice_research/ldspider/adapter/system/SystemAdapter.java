@@ -2,6 +2,7 @@ package org.dice_research.ldspider.adapter.system;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
@@ -41,36 +42,26 @@ public class SystemAdapter extends AbstractSystemAdapter implements ContainerSta
         String sparqlUrl = RabbitMQUtils.readString(buffer);
         String sparqlUser = RabbitMQUtils.readString(buffer);
         String sparqlPwd = RabbitMQUtils.readString(buffer);
+        String[] seedURIs = RabbitMQUtils.readString(buffer).split("\n");
         
-        LOGGER.warn("Sparql Endpoint: " + sparqlUrl);
+        LOGGER.info("Sparql Endpoint: " + sparqlUrl);
+        LOGGER.info("Seed URIs: {}.", Arrays.toString(seedURIs));
         	
         LDSPIDER_ENV = new String[]{ "b=1000",
                 "oe="+sparqlUrl,
                 "user_sparql=" + sparqlUser,
                 "passwd_sparql=" + sparqlPwd,
                 "t="+numberOfThreads+"",
-                "s="};
-		
-        
-		
-	}
-	
-	@Override
-	public void receiveGeneratedTask(String taskId, byte[] data) {
-		 // handle the incoming task and create a result
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("receiveGeneratedTask({})->{}", taskId, new String(data));
-        } else {
-            LOGGER.debug("Received seed URI(s).");
-        }
+                "s="+String.join(",", seedURIs)};
 
-	 	String seed = RabbitMQUtils.readString(data);
-		
-		LDSPIDER_ENV[5] = LDSPIDER_ENV[5] + seed.replaceAll("\n", ",");
-        
-		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
+        ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
 	}
-	
+
+    @Override
+    public void receiveGeneratedTask(String taskId, byte[] data) {
+        throw new IllegalStateException("Should not receive any tasks.");
+    }
+
 	@Override
 	protected synchronized void terminate(Exception cause) {
 		LOGGER.debug("Terminating");
