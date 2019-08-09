@@ -6,8 +6,36 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-<https://github.com/dice-group/ldcbench-ldspider-adapter#System>	a	hobbit:SystemInstance;
-    rdfs:label	"LDSpider"@en;
-	rdfs:comment "The LDSpider project provides a web crawling framework for the Linked Data web."@en;
-	hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
-	hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-adapter" .
+<http://project-hobbit.eu/ldcbench-system/Ldspider> a hobbit:System ;
+    rdfs:label "Ldspider"@en;
+    rdfs:comment "Linked data crawler Ldspider"@en;
+    hobbit:hasParameter <http://project-hobbit.eu/ldcbench-system/numberOfThreads> .
+
+<http://project-hobbit.eu/ldcbench-system/numberOfThreads> a hobbit:Parameter, hobbit:FeatureParameter;
+    rdfs:label "Number of threads"@en;
+    rdfs:comment "The number of worker threads the crawler will use."@en ;
+    rdfs:range xsd:integer .
+
+<http://project-hobbit.eu/ldcbench-system/Ldspider-2-threads>	a	hobbit:SystemInstance;
+    rdfs:label	"Ldspider (2 threads)"@en;
+    rdfs:comment "Ldspider crawler instance with 2 threads"@en;
+    hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
+    hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider> ;
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-squirrel-adapter" ;
+    <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "2"^^xsd:integer .
+
+<http://project-hobbit.eu/ldcbench-system/Ldspider-16-threads>	a	hobbit:SystemInstance;
+    rdfs:label	"Ldspider (16 threads)"@en;
+    rdfs:comment "Ldspider crawler instance with 16 threads"@en;
+    hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
+    hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider> ;
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-squirrel-adapter" ;
+    <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "16"^^xsd:integer .
+
+<http://project-hobbit.eu/ldcbench-system/Ldspider-32-threads>	a	hobbit:SystemInstance;
+    rdfs:label	"Ldspider (32 threads)"@en;
+    rdfs:comment "Ldspider crawler instance with 32 threads"@en;
+    hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
+    hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider> ;
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-squirrel-adapter" ;
+    <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "32"^^xsd:integer .
