@@ -7,12 +7,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
+import org.apache.jena.rdf.model.Literal;
 import org.dice_research.squirrel.data.uri.serialize.Serializer;
 import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.hobbit.core.Commands;
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.core.components.ContainerStateObserver;
 import org.hobbit.core.rabbit.RabbitMQUtils;
+import org.hobbit.utils.rdf.RdfHelper;
+
 import static org.hobbit.core.Constants.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,8 @@ public class SystemAdapter extends AbstractSystemAdapter {
     private long numberOfThreads = 2;
     protected boolean terminating = false;
     protected String[] LDSPIDER_ENV;
+    public final static String NUMBER_THREADS_URI = "http://project-hobbit.eu/ldcbench-system/numberOfThreads";
+
     
     protected String ldSpiderInstance;
 
@@ -47,12 +52,20 @@ public class SystemAdapter extends AbstractSystemAdapter {
         
         LOGGER.info("Sparql Endpoint: " + sparqlUrl);
         LOGGER.info("Seed URIs: {}.", Arrays.toString(seedURIs));
+        
+        Literal workerCountLiteral = RdfHelper.getLiteral(systemParamModel, null,
+                systemParamModel.getProperty(NUMBER_THREADS_URI));
+        if (workerCountLiteral == null) {
+            throw new IllegalStateException(
+                    "Couldn't find necessary parameter value for \"" + NUMBER_THREADS_URI + "\". Aborting.");
+        }
+        numberOfThreads = workerCountLiteral.getInt();
         	
         LDSPIDER_ENV = new String[]{ "b=1000",
                 "oe="+sparqlUrl,
                 "user_sparql=" + sparqlUser,
                 "passwd_sparql=" + sparqlPwd,
-                "t="+numberOfThreads+"",
+                "t="+numberOfThreads,
                 "s="+String.join(",", seedURIs)};
 
         ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
