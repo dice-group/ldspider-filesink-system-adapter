@@ -61,7 +61,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
         }
         numberOfThreads = workerCountLiteral.getInt();
         	
-        LDSPIDER_ENV = new String[]{ "b=1000",
+        LDSPIDER_ENV = new String[]{ "b=10",
                 "oe="+sparqlUrl,
                 "user_sparql=" + sparqlUser,
                 "passwd_sparql=" + sparqlPwd,
