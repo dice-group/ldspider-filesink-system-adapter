@@ -1,4 +1,4 @@
-package org.dice_research.squirrel.benchmark;
+package org.dice_research.ldspider.benchmark;
 
 
 /**
