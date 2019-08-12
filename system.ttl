@@ -16,20 +16,20 @@
     rdfs:comment "The number of worker threads the crawler will use."@en ;
     rdfs:range xsd:integer .
 
-<http://project-hobbit.eu/ldcbench-system/Ldspider-2-threads>	a	hobbit:SystemInstance;
-    rdfs:label	"Ldspider (2 threads)"@en;
-    rdfs:comment "Ldspider crawler instance with 2 threads"@en;
+<http://project-hobbit.eu/ldcbench-system/Ldspider-8-threads>	a	hobbit:SystemInstance;
+    rdfs:label	"Ldspider (8 threads)"@en;
+    rdfs:comment "Ldspider crawler instance with 8 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider> ;
-    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-squirrel-adapter" ;
-    <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "2"^^xsd:integer .
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-adapter" ;
+    <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "8"^^xsd:integer .
 
 <http://project-hobbit.eu/ldcbench-system/Ldspider-16-threads>	a	hobbit:SystemInstance;
     rdfs:label	"Ldspider (16 threads)"@en;
     rdfs:comment "Ldspider crawler instance with 16 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider> ;
-    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-squirrel-adapter" ;
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "16"^^xsd:integer .
 
 <http://project-hobbit.eu/ldcbench-system/Ldspider-32-threads>	a	hobbit:SystemInstance;
@@ -37,5 +37,5 @@
     rdfs:comment "Ldspider crawler instance with 32 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider> ;
-    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-squirrel-adapter" ;
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "32"^^xsd:integer .
