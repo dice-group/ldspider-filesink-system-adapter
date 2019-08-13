@@ -29,7 +29,7 @@
     rdfs:comment "Ldspider crawler instance with 16 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
-    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-filesink-ldspider-filesink-adapter" ;
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "16"^^xsd:integer .
 
 <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink-32-threads>	a	hobbit:SystemInstance;
@@ -37,5 +37,5 @@
     rdfs:comment "Ldspider crawler instance with 32 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
-    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-filesink-ldspider-filesink-adapter" ;
+    hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "32"^^xsd:integer .
