@@ -25,7 +25,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemAdapter.class);
 
 	
-	private final static String LDSPIDER_IMAGE = "dicegroup/ldspider:latest";
+	private final static String LDSPIDER_IMAGE = "dicegroup/ldspider-filsink:latest";
     private long numberOfThreads = 2;
     protected boolean terminating = false;
     protected String[] LDSPIDER_ENV;
@@ -63,6 +63,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
         	
         LDSPIDER_ENV = new String[]{ "b=10",
                 "oe="+sparqlUrl,
+                "o=tempFile",
                 "user_sparql=" + sparqlUser,
                 "passwd_sparql=" + sparqlPwd,
                 "t="+numberOfThreads,
