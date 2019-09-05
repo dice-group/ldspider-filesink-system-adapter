@@ -6,6 +6,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
+
 <http://project-hobbit.eu/ldcbench-system/apache-nutch> a hobbit:System ;
     rdfs:label "Apache Nutch"@en;
     rdfs:comment "Web crawler Apache Nutch"@en;
@@ -23,5 +24,6 @@
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/apache-nutch> ;
     hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-apache-nutch-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "2"^^xsd:integer .
+
 
 
