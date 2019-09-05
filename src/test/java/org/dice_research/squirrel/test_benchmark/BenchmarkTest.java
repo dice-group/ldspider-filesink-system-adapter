@@ -2,7 +2,7 @@ package org.dice_research.squirrel.test_benchmark;
 
 
 import static org.apache.jena.rdf.model.ModelFactory.createDefaultModel;
-import static org.dice_research.anutch.benchmark.Constants.SYSTEM_URI;
+import static org.dice_research.ldspider.benchmark.Constants.SYSTEM_URI;
 import static org.hobbit.core.Constants.BENCHMARK_PARAMETERS_MODEL_KEY;
 import static org.hobbit.core.Constants.HOBBIT_EXPERIMENT_URI_KEY;
 import static org.hobbit.core.Constants.HOBBIT_SESSION_ID_KEY;

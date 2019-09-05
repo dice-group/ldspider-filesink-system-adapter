@@ -1,7 +1,7 @@
 package org.dice_research.squirrel.test_benchmark;
 
 
-import static org.dice_research.anutch.benchmark.Constants.*;
+import static org.dice_research.ldspider.benchmark.Constants.*;
 
 import org.hobbit.core.run.ComponentStarter;
 import org.hobbit.sdk.docker.builders.DynamicDockerFileBuilder;
