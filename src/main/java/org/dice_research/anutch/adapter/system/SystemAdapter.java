@@ -1,22 +1,14 @@
-package org.dice_research.ldspider.adapter.system;
+package org.dice_research.anutch.adapter.system;
+
+import static org.hobbit.core.Constants.CONTAINER_TYPE_SYSTEM;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Semaphore;
 
-import org.apache.jena.rdf.model.Literal;
-import org.dice_research.squirrel.data.uri.serialize.Serializer;
-import org.dice_research.squirrel.data.uri.serialize.java.GzipJavaUriSerializer;
 import org.hobbit.core.Commands;
 import org.hobbit.core.components.AbstractSystemAdapter;
-import org.hobbit.core.components.ContainerStateObserver;
 import org.hobbit.core.rabbit.RabbitMQUtils;
-import org.hobbit.utils.rdf.RdfHelper;
-
-import static org.hobbit.core.Constants.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +17,12 @@ public class SystemAdapter extends AbstractSystemAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemAdapter.class);
 
 	
-	private final static String LDSPIDER_IMAGE = "dicegroup/ldspider-filsink:latest";
-    private long numberOfThreads = 2;
+	private final static String ANUTCH_IMAGE = "apache/nutch";
     protected boolean terminating = false;
-    protected String[] LDSPIDER_ENV;
-    public final static String NUMBER_THREADS_URI = "http://project-hobbit.eu/ldcbench-system/numberOfThreads";
+    protected String[] NUTCH_ENV;
 
     
-    protected String ldSpiderInstance;
+    protected String nutchInstance;
 
 	
 	@Override
@@ -53,23 +43,16 @@ public class SystemAdapter extends AbstractSystemAdapter {
         LOGGER.info("Sparql Endpoint: " + sparqlUrl);
         LOGGER.info("Seed URIs: {}.", Arrays.toString(seedURIs));
         
-        Literal workerCountLiteral = RdfHelper.getLiteral(systemParamModel, null,
-                systemParamModel.getProperty(NUMBER_THREADS_URI));
-        if (workerCountLiteral == null) {
-            throw new IllegalStateException(
-                    "Couldn't find necessary parameter value for \"" + NUMBER_THREADS_URI + "\". Aborting.");
-        }
-        numberOfThreads = workerCountLiteral.getInt();
+        
         	
-        LDSPIDER_ENV = new String[]{ "b=10",
+        NUTCH_ENV = new String[]{ "b=10",
                 "oe="+sparqlUrl,
                 "o=tempFile",
                 "user_sparql=" + sparqlUser,
                 "passwd_sparql=" + sparqlPwd,
-                "t="+numberOfThreads,
                 "s="+String.join(",", seedURIs)};
 
-        ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
+        nutchInstance = createContainer(ANUTCH_IMAGE, CONTAINER_TYPE_SYSTEM, NUTCH_ENV);
 	}
 
     @Override
@@ -97,14 +80,14 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
 	public void containerStopped(String containerName, int exitCode) {
         // Check whether it is one of your containers and react accordingly
-        if ((ldSpiderInstance != null) && (ldSpiderInstance.equals(containerName)) && !terminating) {
+        if ((nutchInstance != null) && (nutchInstance.equals(containerName)) && !terminating) {
             Exception e = null;
             if (exitCode != 0) {
                 // The ldspider had an error. Its time to panic
                 LOGGER.error("ldspider terminated with exit code {}.", exitCode);
                 e = new IllegalStateException("ldspider terminated with exit code " + exitCode + ".");
             }
-            ldSpiderInstance = null;
+            nutchInstance = null;
             terminate(e);
         } 
 		

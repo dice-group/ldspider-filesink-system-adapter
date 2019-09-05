@@ -1,9 +1,7 @@
-package org.dice_research.ldspider.benchmark;
+package org.dice_research.anutch.benchmark;
 
 
-/**
- * @author Pavel Smirnov
- */
+
 
 public class Constants {
 
