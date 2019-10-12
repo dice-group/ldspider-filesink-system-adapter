@@ -20,9 +20,11 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
 	private final static String LDSPIDER_IMAGE = "dicegroup/ldspider-filesink:latest";
 	private long numberOfThreads = 2;
+	private String strategy = "";
 	protected boolean terminating = false;
 	protected String[] LDSPIDER_ENV;
 	public final static String NUMBER_THREADS_URI = "http://project-hobbit.eu/ldcbench-system/numberOfThreads";
+	public final static String STRATEGY_URI = "http://project-hobbit.eu/ldcbench-system/strategy";
 
 	protected String ldSpiderInstance;
 
@@ -50,19 +52,37 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
 		Literal workerCountLiteral = RdfHelper.getLiteral(systemParamModel, null,
 				systemParamModel.getProperty(NUMBER_THREADS_URI));
+		
+		Literal strategyLiteral = RdfHelper.getLiteral(systemParamModel, null,
+				systemParamModel.getProperty(STRATEGY_URI));
+		
 		if (workerCountLiteral == null) {
 			throw new IllegalStateException(
 					"Couldn't find necessary parameter value for \"" + NUMBER_THREADS_URI + "\". Aborting.");
 		}
 		numberOfThreads = workerCountLiteral.getInt();
+		strategy = strategyLiteral.getString();
 
-		LDSPIDER_ENV = new String[]{ "b=10",
-                "oe="+sparqlUrl,
-                "o=tempFile",
-                "user_sparql=" + sparqlUser,
-                "passwd_sparql=" + sparqlPwd,
-                "t="+numberOfThreads,
-                "s="+String.join(",", seedURIs)};
+		if(strategy != null && strategy.equals("b")) {
+			LOGGER.info("Using breadth-first Strategy");
+			LDSPIDER_ENV = new String[]{ "b=-1",
+	                "oe="+sparqlUrl,
+	                "o=tempFile",
+	                "user_sparql=" + sparqlUser,
+	                "passwd_sparql=" + sparqlPwd,
+	                "t="+numberOfThreads,
+	                "s="+String.join(",", seedURIs)};
+		}else if(strategy != null && strategy.equals("c")) {
+			LOGGER.info("Using load balanced Strategy");
+			LDSPIDER_ENV = new String[]{ "c=1000000000",
+	                "oe="+sparqlUrl,
+	                "o=tempFile",
+	                "user_sparql=" + sparqlUser,
+	                "passwd_sparql=" + sparqlPwd,
+	                "t="+numberOfThreads,
+	                "s="+String.join(",", seedURIs)};
+		}
+		
 
 		LOGGER.info("Starting LDSpider - FileSink");
 		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);

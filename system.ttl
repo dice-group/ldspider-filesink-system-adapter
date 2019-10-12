@@ -16,56 +16,56 @@
     rdfs:comment "The number of worker threads the crawler will use."@en ;
     rdfs:range xsd:integer .
 
-<http://project-hobbit.eu/ldcbench-system/Ldspider-filesink-8-threads>	a	hobbit:SystemInstance;
+<http://project-hobbit.eu/ldcbench-system/lds-bf-8-threads>	a	hobbit:SystemInstance;
     rdfs:label	"Ldspider filesink (8 threads) - breadth-first"@en;
     rdfs:comment "Ldspider crawler instance with 8 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
     hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "8"^^xsd:integer ;
-    <http://project-hobbit.eu/ldcbench-system/strategy> "b"^^xsd:string .
+    <http://project-hobbit.eu/ldcbench-system/strategy> "b" .
 
-<http://project-hobbit.eu/ldcbench-system/Ldspider-filesink-16-threads>	a	hobbit:SystemInstance;
+<http://project-hobbit.eu/ldcbench-system/lds-bf-16-threads>	a	hobbit:SystemInstance;
     rdfs:label	"Ldspider filesink (16 threads) - breadth-first"@en;
     rdfs:comment "Ldspider crawler instance with 16 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
     hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "16"^^xsd:integer ;
-    <http://project-hobbit.eu/ldcbench-system/strategy> "b"^^xsd:string .
+    <http://project-hobbit.eu/ldcbench-system/strategy> "b" .
 
-<http://project-hobbit.eu/ldcbench-system/Ldspider-filesink-32-threads>	a	hobbit:SystemInstance;
+<http://project-hobbit.eu/ldcbench-system/lds-bf-32-threads>	a	hobbit:SystemInstance;
     rdfs:label	"Ldspider filesink (32 threads) - breadth-first"@en;
     rdfs:comment "Ldspider crawler instance with 32 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
     hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "32"^^xsd:integer ;
-    <http://project-hobbit.eu/ldcbench-system/strategy> "b"^^xsd:string .
+    <http://project-hobbit.eu/ldcbench-system/strategy> "b" .
 
-<http://project-hobbit.eu/ldcbench-system/Ldspider-filesink-8-threads>	a	hobbit:SystemInstance;
+<http://project-hobbit.eu/ldcbench-system/lds-lb-8-threads>	a	hobbit:SystemInstance;
     rdfs:label	"Ldspider filesink (8 threads) - load balanced"@en;
     rdfs:comment "Ldspider crawler instance with 8 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
     hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "8"^^xsd:integer ;
-    <http://project-hobbit.eu/ldcbench-system/strategy> "c"^^xsd:string .
+    <http://project-hobbit.eu/ldcbench-system/strategy> "c" .
 
-<http://project-hobbit.eu/ldcbench-system/Ldspider-filesink-16-threads>	a	hobbit:SystemInstance;
+<http://project-hobbit.eu/ldcbench-system/lds-lb-16-threads>	a	hobbit:SystemInstance;
     rdfs:label	"Ldspider filesink (16 threads) - load balanced"@en;
     rdfs:comment "Ldspider crawler instance with 16 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
     hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "16"^^xsd:integer ;
-    <http://project-hobbit.eu/ldcbench-system/strategy> "c"^^xsd:string .
+    <http://project-hobbit.eu/ldcbench-system/strategy> "c" .
 
-<http://project-hobbit.eu/ldcbench-system/Ldspider-filesink-32-threads>	a	hobbit:SystemInstance;
+<http://project-hobbit.eu/ldcbench-system/lds-lb-32-threads>	a	hobbit:SystemInstance;
     rdfs:label	"Ldspider filesink (32 threads) - load balanced"@en;
     rdfs:comment "Ldspider crawler instance with 32 threads"@en;
     hobbit:implementsAPI <https://github.com/dice-group/ldcbench#Api>;
     hobbit:instanceOf <http://project-hobbit.eu/ldcbench-system/Ldspider-filesink> ;
     hobbit:imageName "git.project-hobbit.eu:4567/ldcbench/ldcbench-ldspider-filesink-adapter" ;
     <http://project-hobbit.eu/ldcbench-system/numberOfThreads> "32"^^xsd:integer ;
-    <http://project-hobbit.eu/ldcbench-system/strategy> "c"^^xsd:string .
+    <http://project-hobbit.eu/ldcbench-system/strategy> "c" .
