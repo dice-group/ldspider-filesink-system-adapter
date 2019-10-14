@@ -65,7 +65,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
 		if(strategy != null && strategy.equals("b")) {
 			LOGGER.info("Using breadth-first Strategy");
-			LDSPIDER_ENV = new String[]{ "b=-1",
+			LDSPIDER_ENV = new String[]{ "b=100",
 	                "oe="+sparqlUrl,
 	                "o=tempFile",
 	                "user_sparql=" + sparqlUser,
@@ -74,7 +74,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
 	                "s="+String.join(",", seedURIs)};
 		}else if(strategy != null && strategy.equals("c")) {
 			LOGGER.info("Using load balanced Strategy");
-			LDSPIDER_ENV = new String[]{ "c=1000000000",
+			LDSPIDER_ENV = new String[]{ "c="+Integer.MAX_VALUE,
 	                "oe="+sparqlUrl,
 	                "o=tempFile",
 	                "user_sparql=" + sparqlUser,
