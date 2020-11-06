@@ -4,9 +4,12 @@ import static org.hobbit.core.Constants.CONTAINER_TYPE_SYSTEM;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.jena.rdf.model.Literal;
+import org.dice_research.ldspider.vocab.LDSpiderSystem;
 import org.hobbit.core.Commands;
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.core.rabbit.RabbitMQUtils;
@@ -19,12 +22,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SystemAdapter.class);
 
 	private final static String LDSPIDER_IMAGE = "dicegroup/ldspider-filesink:latest";
-	private long numberOfThreads = 2;
-	private String strategy = "";
 	protected boolean terminating = false;
-	protected String[] LDSPIDER_ENV;
-	public final static String NUMBER_THREADS_URI = "http://project-hobbit.eu/ldcbench-system/numberOfThreads";
-	public final static String STRATEGY_URI = "http://project-hobbit.eu/ldcbench-system/strategy";
 
 	protected String ldSpiderInstance;
 
@@ -36,58 +34,69 @@ public class SystemAdapter extends AbstractSystemAdapter {
 
 	@Override
 	public void receiveGeneratedData(byte[] data) {
-		// handle the incoming data as described in the benchmark description
-		ByteBuffer buffer = ByteBuffer.wrap(data);
-		String sparqlUrl = RabbitMQUtils.readString(buffer);
-		String sparqlUser = RabbitMQUtils.readString(buffer);
-		String sparqlPwd = RabbitMQUtils.readString(buffer);
-		String[] seedURIs = RabbitMQUtils.readString(buffer).split("\n");
+        // handle the incoming data as described in the benchmark description
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        String sparqlUrl = RabbitMQUtils.readString(buffer);
+        String sparqlUser = RabbitMQUtils.readString(buffer);
+        String sparqlPwd = RabbitMQUtils.readString(buffer);
+        String[] seedURIs = RabbitMQUtils.readString(buffer).split("\n");
 
-		LOGGER.info("Sparql Endpoint: " + sparqlUrl);
-		LOGGER.info("Sparql User: " + sparqlUser);
-		LOGGER.info("Sparql Passwd: " + sparqlPwd);
+        List<String> envVariables = new ArrayList<>();
+        envVariables.add("s=" + String.join(",", seedURIs));
+        envVariables.add("o=tempFile");
 
-		
-		LOGGER.info("Seed URIs: {}.", Arrays.toString(seedURIs));
+        LOGGER.info("Sparql Endpoint: " + sparqlUrl);
+        envVariables.add("oe=" + sparqlUrl);
+        LOGGER.info("Sparql User: " + sparqlUser);
+        envVariables.add("user_sparql=" + sparqlUser);
+        LOGGER.info("Sparql Passwd: " + sparqlPwd);
+        envVariables.add("passwd_sparql=" + sparqlPwd);
 
-		Literal workerCountLiteral = RdfHelper.getLiteral(systemParamModel, null,
-				systemParamModel.getProperty(NUMBER_THREADS_URI));
-		
-		Literal strategyLiteral = RdfHelper.getLiteral(systemParamModel, null,
-				systemParamModel.getProperty(STRATEGY_URI));
-		
-		if (workerCountLiteral == null) {
-			throw new IllegalStateException(
-					"Couldn't find necessary parameter value for \"" + NUMBER_THREADS_URI + "\". Aborting.");
-		}
-		numberOfThreads = workerCountLiteral.getInt();
-		strategy = strategyLiteral.getString();
+        LOGGER.info("Seed URIs: {}.", Arrays.toString(seedURIs));
 
-		if(strategy != null && strategy.equals("b")) {
-			LOGGER.info("Using breadth-first Strategy");
-			LDSPIDER_ENV = new String[]{ "b=100",
-	                "oe="+sparqlUrl,
-	                "o=tempFile",
-	                "user_sparql=" + sparqlUser,
-	                "passwd_sparql=" + sparqlPwd,
-	                "t="+numberOfThreads,
-	                "s="+String.join(",", seedURIs)};
-		}else if(strategy != null && strategy.equals("c")) {
-			LOGGER.info("Using load balanced Strategy");
-			LDSPIDER_ENV = new String[]{ "c="+Integer.MAX_VALUE,
-	                "oe="+sparqlUrl,
-	                "o=tempFile",
-	                "user_sparql=" + sparqlUser,
-	                "passwd_sparql=" + sparqlPwd,
-	                "t="+numberOfThreads,
-	                "s="+String.join(",", seedURIs)};
-		}
-		
+        Literal workerCountLiteral = RdfHelper.getLiteral(systemParamModel, null, LDSpiderSystem.numberOfThreads);
+        if (workerCountLiteral == null) {
+            throw new IllegalStateException("Couldn't find necessary parameter value for \""
+                    + LDSpiderSystem.numberOfThreads + "\". Aborting.");
+        }
+        int numberOfThreads = workerCountLiteral.getInt();
+        envVariables.add("t=" + numberOfThreads);
 
-		LOGGER.info("Starting LDSpider - FileSink");
-		ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM, LDSPIDER_ENV);
-		LOGGER.info("Image Started");
-
+        String strategy = RdfHelper.getStringValue(systemParamModel, null, LDSpiderSystem.strategy);
+        if (strategy == null) {
+            throw new IllegalStateException("Couldn't find necessary parameter value for \""
+                    + LDSpiderSystem.numberOfThreads + "\". Aborting.");
+        }
+        
+        switch(strategy) {
+        case "b" : {
+            // Breadth first strategy - we want to crawl as far as possible
+            LOGGER.info("Using breadth-first Strategy");
+            envVariables.add("b=100");
+            break;
+        }
+        case "c" : {
+            // Load balancing strategy - we want to crawl as many URIs as possible
+            LOGGER.info("Using load balanced Strategy");
+            envVariables.add( "c="+Integer.MAX_VALUE);
+            break;
+        }
+        case "dbfq" : {
+            // Disk-based breadth first strategy
+            LOGGER.info("Using disk-based breadth-first Strategy");
+            envVariables.add( "dbfq=");
+            break;
+        }
+        default: {
+            throw new IllegalStateException("Got an unknown strategy \""
+                    + LDSpiderSystem.numberOfThreads + "\". Aborting.");
+        }
+        }
+        
+        LOGGER.info("Starting LDSpider - FileSink");
+        ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM,
+                envVariables.toArray(new String[envVariables.size()]));
+        LOGGER.info("Image Started");
 	}
 
 	@Override
