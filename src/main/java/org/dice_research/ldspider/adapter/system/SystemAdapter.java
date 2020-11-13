@@ -91,7 +91,8 @@ public class SystemAdapter extends AbstractSystemAdapter {
         case "dbfq": {
             // Disk-based breadth first strategy
             LOGGER.info("Using disk-based breadth-first Strategy");
-            envVariables.add("dbfq=");
+            envVariables.add("dbfq=1");
+            envVariables.add("b=100");
             break;
         }
         default: {
