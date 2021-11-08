@@ -22,9 +22,11 @@ public class SystemAdapter extends AbstractSystemAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemAdapter.class);
 
     private final static String LDSPIDER_IMAGE = "dicegroup/ldspider-filesink:latest";
+    private final static boolean USE_IMAGE = false;
     protected boolean terminating = false;
 
     protected String ldSpiderInstance;
+    protected Thread ldSpiderThread;
 
     @Override
     public void init() throws Exception {
@@ -101,9 +103,26 @@ public class SystemAdapter extends AbstractSystemAdapter {
         }
         }
         LOGGER.info("Starting LDSpider - FileSink");
-        ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM,
-                envVariables.toArray(new String[envVariables.size()]));
-        LOGGER.info("Image Started");
+        if (USE_IMAGE) {
+            ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM,
+                    envVariables.toArray(new String[envVariables.size()]));
+            LOGGER.info("Image Started");
+        } else {
+            ldSpiderThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        com.ontologycentral.ldspider.Main.main(envVariables.toArray(new String[envVariables.size()]));
+                        terminate(null);
+                    } catch (Exception e) {
+                        terminate(e);
+                    }
+                }
+            });
+            ldSpiderThread.start();
+            ldSpiderInstance = null;
+            LOGGER.info("Thread Started");
+        }
     }
 
     @Override

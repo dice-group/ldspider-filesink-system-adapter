@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dice_research.squirrel</groupId>
     <artifactId>ldspider-filesink-ldcbench-adapter</artifactId>
@@ -36,6 +36,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.ontologycentral</groupId>
+            <artifactId>ldspider-filesink</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.hobbit</groupId>
             <artifactId>core</artifactId>
             <version>1.0.15</version>
@@ -60,15 +66,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>org.dice-research</groupId>
             <artifactId>squirrel.api</artifactId>
             <version>0.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tika</groupId>
+                    <artifactId>tika-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        
-
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -87,12 +96,12 @@
             <artifactId>platform-controller</artifactId>
             <version>2.0.5</version>
             <scope>test</scope>
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>com.spotify</groupId>-->
-                    <!--<artifactId>docker-client</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
+            <!--<exclusions> -->
+            <!--<exclusion> -->
+            <!--<groupId>com.spotify</groupId> -->
+            <!--<artifactId>docker-client</artifactId> -->
+            <!--</exclusion> -->
+            <!--</exclusions> -->
         </dependency>
     </dependencies>
 
@@ -155,14 +164,14 @@
                             </filters>
                             <transformers>
                                 <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                                         <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
                                     </manifestEntries>
                                 </transformer>
                                 <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
                         </configuration>
                         <executions>
