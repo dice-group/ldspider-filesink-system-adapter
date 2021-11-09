@@ -4,9 +4,9 @@ import static org.hobbit.core.Constants.CONTAINER_TYPE_SYSTEM;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.jena.rdf.model.Literal;
 import org.dice_research.ldspider.vocab.LDSpiderSystem;
@@ -43,16 +43,17 @@ public class SystemAdapter extends AbstractSystemAdapter {
         String sparqlPwd = RabbitMQUtils.readString(buffer);
         String[] seedURIs = RabbitMQUtils.readString(buffer).split("\n");
 
-        List<String> envVariables = new ArrayList<>();
-        envVariables.add("s=" + String.join(",", seedURIs));
-        envVariables.add("o=tempFile");
+        Map<String, String> parameters = new HashMap<>();
+
+        parameters.put("s", String.join(",", seedURIs));
+        parameters.put("o", "tempFile");
 
         LOGGER.info("Sparql Endpoint: " + sparqlUrl);
-        envVariables.add("oe=" + sparqlUrl);
+        parameters.put("oe", sparqlUrl);
         LOGGER.info("Sparql User: " + sparqlUser);
-        envVariables.add("user_sparql=" + sparqlUser);
+        parameters.put("user_sparql", sparqlUser);
         LOGGER.info("Sparql Passwd: " + sparqlPwd);
-        envVariables.add("passwd_sparql=" + sparqlPwd);
+        parameters.put("passwd_sparql", sparqlPwd);
 
         LOGGER.info("Seed URIs: {}.", Arrays.toString(seedURIs));
 
@@ -62,7 +63,7 @@ public class SystemAdapter extends AbstractSystemAdapter {
                     + LDSpiderSystem.numberOfThreads + "\". Aborting.");
         }
         int numberOfThreads = workerCountLiteral.getInt();
-        envVariables.add("t=" + numberOfThreads);
+        parameters.put("t", Integer.toString(numberOfThreads));
 
         String strategy = RdfHelper.getStringValue(systemParamModel, null, LDSpiderSystem.strategy);
         if (strategy == null) {
@@ -74,27 +75,27 @@ public class SystemAdapter extends AbstractSystemAdapter {
         if (politenessLiteral != null) {
             long politeness = workerCountLiteral.getLong();
             LOGGER.info("Using static politeness strategy with {}ms delay.", politeness);
-            envVariables.add("polite=" + politeness);
+            parameters.put("polite", Long.toString(politeness));
         }
 
         switch (strategy) {
         case "b": {
             // Breadth first strategy - we want to crawl as far as possible
             LOGGER.info("Using breadth-first Strategy");
-            envVariables.add("b=100");
+            parameters.put("b", "100");
             break;
         }
         case "c": {
             // Load balancing strategy - we want to crawl as many URIs as possible
             LOGGER.info("Using load balanced Strategy");
-            envVariables.add("c=" + Integer.MAX_VALUE);
+            parameters.put("c", Integer.toString(Integer.MAX_VALUE));
             break;
         }
         case "dbfq": {
             // Disk-based breadth first strategy
             LOGGER.info("Using disk-based breadth-first Strategy");
-            envVariables.add("dbfq=1");
-            envVariables.add("b=100");
+            parameters.put("dbfq", "1");
+            parameters.put("b", "100");
             break;
         }
         default: {
@@ -105,14 +106,14 @@ public class SystemAdapter extends AbstractSystemAdapter {
         LOGGER.info("Starting LDSpider - FileSink");
         if (USE_IMAGE) {
             ldSpiderInstance = createContainer(LDSPIDER_IMAGE, CONTAINER_TYPE_SYSTEM,
-                    envVariables.toArray(new String[envVariables.size()]));
+                    parameters.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).toArray(String[]::new));
             LOGGER.info("Image Started");
         } else {
             ldSpiderThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        com.ontologycentral.ldspider.Main.main(envVariables.toArray(new String[envVariables.size()]));
+                        com.ontologycentral.ldspider.Main.run(parameters);
                         terminate(null);
                     } catch (Exception e) {
                         terminate(e);
